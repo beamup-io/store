@@ -1,11 +1,12 @@
 {application, store,
- [{description, "An OTP application"},
+ [{description, "BeamUp Release Store"},
   {vsn, "0.1.0"},
   {registered, []},
   {mod, { store_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    cowboy
    ]},
   {env,[]},
   {modules, []},
