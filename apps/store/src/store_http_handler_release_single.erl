@@ -23,11 +23,11 @@ content_types_provided(Req, State) ->
 
 resource_exists(Req, _State) ->
   ProjectName = cowboy_req:binding(project_name, Req),
-  TargetArch = cowboy_req:binding(target_arch, Req),
+  Architecture = cowboy_req:binding(architecture, Req),
   Branch = cowboy_req:binding(branch, Req),
   Version = cowboy_req:binding(version, Req),
   State = store_release:new(#{project_name => ProjectName,
-                              target_arch => TargetArch,
+                              architecture => Architecture,
                               branch => Branch,
                               version => Version}),
   {store_release:exists(State), Req, State}.

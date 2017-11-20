@@ -15,7 +15,7 @@ stop(_State) ->
   ok.
 
 routes() ->
-  [{'_', [{"/:project_name/release/:target_arch/:branch/:version",
+  [{'_', [{"/:project_name/release/:architecture/:branch/:version",
            store_http_handler_release_single, []},
-          {"/:project_name/release/:target_arch/:branch",
+          {"/:project_name/release/:architecture/:branch",
            store_http_handler_release_list, []}]}].
