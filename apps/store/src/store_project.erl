@@ -8,30 +8,36 @@ new(Project) ->
 dir(Project) ->
   BaseDir = <<"/tmp/beamup/store/projects/">>,
   Name = maps:get(project_name, Project),
-  Arch = maps:get(target_arch, Project),
+  Architecture = maps:get(architecture, Project),
   Branch = maps:get(branch, Project),
-  Folder = <<Name/binary, $/, Arch/binary, $/, Branch/binary>>,
+  Folder = <<Name/binary, $/, Architecture/binary, $/, Branch/binary>>,
   <<BaseDir/binary, Folder/binary, $/>>.
 
 exists(Project) ->
   filelib:is_file(dir(Project)).
 
 versions(Release) ->
+  Branch = maps:get(branch, Release),
+  N = string:length(Branch),
   {ok, Filenames} = file:list_dir(dir(Release)),
-  [filename_to_vsn(F) || F <- Filenames].
+  io:format("Fn: ~p~n", [Filenames]),
+  lists:filtermap(fun(F) ->
+    io:format("F: ~p~n", [F]),
+    Filename = filename:basename(list_to_binary(F), ".tar.gz"),
+    case Filename of
+      <<Branch:N/binary, $-, Version/binary>> ->
+        {true, Version};
+      _ -> false
+    end
+  end, Filenames).
 
 % Private
 
-filename_to_vsn(F) ->
-  R = filename:rootname(F, ".tar.gz"),
-  Vsn = lists:last(string:tokens(R, "-")),
-  list_to_binary(Vsn).
-
 validate(P = #{project_name := ProjectName,
-               target_arch := TargetArch,
+               architecture := Architecture,
                branch := Branch}) ->
   true = valid_name(ProjectName),
-  true = valid_name(TargetArch),
+  true = valid_name(Architecture),
   true = valid_name(Branch),
   P.
 
